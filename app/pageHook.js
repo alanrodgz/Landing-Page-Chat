@@ -34,6 +34,7 @@ import { useForm, Controller } from "react-hook-form";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // Zod
 import { z } from "zod";
+import CountdownTimer from "@/components/CountdownTimer";
 
 // const emailSchema = z.object({
 //   email: z.string().email()
@@ -87,21 +88,25 @@ function PageHook() {
 
   const onSubmit = async (data) => {
     try {
-      let res = await fetch("/api/email", {
-        method: "POST",
-        body: JSON.stringify(data.email),
+      const res = await fetch('/api/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: data.email }),
       });
+  
+      const responseData = await res.json(); // Parse the response
+      console.log(responseData); // Log the response for debugging
+  
       if (res.ok) {
         reset();
         handleOpenModel();
-      }
-
-      if (!res.ok) {
-        reset();
-        throw new Error({ message: "Email already exists" });
+      } else {
+        throw new Error(responseData.message || 'Failed to save email');
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error:', error);
     }
   };
 
@@ -168,12 +173,10 @@ function PageHook() {
               </p> */}
             </div>
             <h1 className="text-3xl font-bold  sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent dark:bg-gradient-to-r bg-gradient-to-tr dark:from-white from-black to-neutral-600 dark:to-neutral-800 capitalize md:max-w-2xl lg:max-w-3xl mx-auto ">
-              Join The Waitlist for My Courses Today!
+              <CountdownTimer />
             </h1>
             <p className="max-w-[600px]  leading-7 text-center text-[16px] bg-clip-text text-transparent dark:bg-gradient-to-br bg-gradient-to-tr dark:from-white from-black to-neutral-600 dark:to-neutral-700 mx-auto ">
-              Discover an Array of Incredible Courses and Be Prepared for an
-              Exciting Wave of New Resources on the Horizon. Sign up to Our
-              Waitlist to be notified when we launch!
+              Come an chat with women who are eager to chat with you.
             </p>
             {errors.email && (
               <p className="border dark:border-white/25 border-[#704705] flex gap-x-3 items-center p-2 pl-5 max-w-md bg-gradient-to-r from-10% dark:from-[#704705] text-[#3a2503] from-[#f5a524] via-30% dark:via-black dark:to-black to-100% to-[#704705] mx-auto rounded-md dark:text-white ">
@@ -301,7 +304,7 @@ function PageHook() {
           </div>
           <div className="p-3 rounded-lg border dark:border-white/10 border-neutral-400 dark:border-opacity-10 relative top-14 sm:top-14 lg:top-24 max-w-xl mx-auto flex flex-col lg:flex-row justify-between items-center text-sm">
             <p className=" text-zinc-500 dark:text-zinc-100">
-              Get ready to redefine your email experience.
+              Please read our terms and conditions
             </p>
             <Link
               onClick={() => setIsOpen(true)}
@@ -359,11 +362,70 @@ const SpringModal = ({ isOpen, setIsOpen }) => {
 
             <div className="relative z-10">
               <p className="lg:text-justify  leading-6 mb-6">
-                I'm doing a little Giveaway on the Launch of this Template
-                Website by December. So If you sign up today, which will only
-                take a few seconds and 1 click, you'll automatically be
-                participated in our giveaway and 10 lucky people will get free
-                access to one of Our Premium Templates, free of cost!
+              **Terms and Conditions for ChatNFap Waitlist**  
+              **Effective Date:** January 19, 2025  
+              **Last Updated:** January 19, 2025  
+
+              Welcome to the waitlist for ChatNFap (“Website”). By joining our waitlist, you agree to comply with these Terms and Conditions (“Terms”). Please read them carefully. If you do not agree with these Terms, you should not join the waitlist.  
+
+              ---
+
+              ### 1. **Age Restriction**
+              1.1. You must be **18 years or older** to join the waitlist. By signing up, you confirm that you are at least 18 years old.  
+              1.2. The Website and its content are intended for **adults only** and may contain explicit material unsuitable for minors.  
+
+              ---
+
+              ### 2. **Acknowledgment of Future Website Launch**
+              2.1. By joining the waitlist, you acknowledge that the Website is expected to launch on **March 5, 2023**, but the launch date is subject to change without prior notice.  
+              2.2. Joining the waitlist does not guarantee access to the Website upon launch. Access will depend on your subscription to the service and compliance with additional terms that may apply.  
+
+              ---
+
+              ### 3. **Privacy and Communication**
+              3.1. By signing up for the waitlist, you agree to provide accurate and complete information.  
+              3.2. Your information will be used in accordance with our [Privacy Policy], which includes sending updates, marketing communications, and other information about the Website launch. You may opt out of marketing communications at any time.  
+
+              ---
+
+              ### 4. **Prohibited Conduct**
+              4.1. You agree not to:  
+                a. Provide false or misleading information when signing up for the waitlist.  
+                b. Use the waitlist or Website for any illegal or unauthorized purpose under applicable laws, including those of the State of California.  
+
+              ---
+
+              ### 5. **Liability Disclaimer**
+              5.1. The waitlist and Website are provided on an “AS IS” and “AS AVAILABLE” basis, without warranties of any kind, either express or implied.  
+              5.2. ChatNFap disclaims all liability for:  
+                a. Delays or changes to the Website launch or waitlist process.  
+                b. Any losses or damages resulting from your reliance on information related to the Website.  
+
+              ---
+
+              ### 6. **Indemnification**
+              6.1. By joining the waitlist, you agree to indemnify, defend, and hold harmless ChatNFap, its owners, affiliates, and representatives from any claims, damages, or liabilities arising from your use of the waitlist or eventual access to the Website.  
+
+              ---
+
+              ### 7. **Governing Law**
+              7.1. These Terms are governed by the laws of the State of California, without regard to its conflict of law principles.  
+              7.2. Any disputes arising from these Terms will be resolved in the state or federal courts located in **[Insert County], California**, and you agree to submit to the jurisdiction of these courts.  
+
+              ---
+
+              ### 8. **Changes to the Terms**
+              8.1. ChatNFap reserves the right to modify or update these Terms at any time without prior notice.  
+              8.2. Your continued participation in the waitlist constitutes acceptance of the updated Terms.  
+
+              ---
+
+              ### 9. **Contact Information**
+              For questions or concerns regarding these Terms, please contact us at ****.  
+
+              --- 
+
+
               </p>
               <div className="flex gap-2">
                 <button

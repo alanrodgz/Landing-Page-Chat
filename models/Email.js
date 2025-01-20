@@ -2,15 +2,15 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const postSchema = new Schema(
+const emailSchema = new Schema(
   {
     email: {
       type: String,
       required: true,
+      unique: true, // Ensures unique emails
     },
   },
   { timestamps: true }
 );
 
-//If the Post collection does not exist create a new one.
-export default mongoose.models.Post || mongoose.model("Post", postSchema);
+export default mongoose.models.Email || mongoose.model("Email", emailSchema);

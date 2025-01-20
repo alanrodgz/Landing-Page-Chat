@@ -1,35 +1,48 @@
-import { NextResponse } from "next/server";
-import connectDB from "@/db/mongodb";
-import Email from "@/models/Email";
+import { MongoClient } from 'mongodb';
 
-export async function GET(req) {
-  return NextResponse.json({ message: "Email already exist" }, { status: 500 });
-}
+// MongoDB connection URI (store this in .env.local)
+const uri = process.env.MONGODB_URI;
 
-export async function POST(req) {
-  await connectDB();
+export async function POST(request) {
+  const { email } = await request.json();
+
+  if (!email) {
+    return new Response(JSON.stringify({ message: 'Email is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
   try {
-    const email = await req.json();
-    if (!email) {
-      return new NextResponse("Missing field", { status: 400 });
+    await client.connect();
+    const database = client.db('waitlistdb'); // Your database name
+    const collection = database.collection('emails'); // Your collection name
+
+    // Check if the email already exists
+    const existingEmail = await collection.findOne({ email });
+    if (existingEmail) {
+      return new Response(JSON.stringify({ message: 'Email already exists' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
-    const checkEmail = await Email.findOne({ email: email });
+    // Insert the email into the collection
+    const result = await collection.insertOne({ email, createdAt: new Date() });
 
-    if (checkEmail) {
-      // return new Error("Email already exist");
-      return NextResponse.json(
-        { message: "Email already exist" },
-        { status: 500 }
-      );
-      console.log("Hey");
-    }
-
-    const newEmail = new Email({ email });
-
-    return NextResponse.json(await newEmail.save(), { status: 200 });
+    return new Response(JSON.stringify({ message: 'Email saved successfully!', result }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return new Response(JSON.stringify({ message: 'Failed to save email', error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } finally {
+    await client.close();
   }
 }
